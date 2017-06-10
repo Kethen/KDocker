@@ -29,6 +29,7 @@
 #include "constants.h"
 #include "kdocker.h"
 
+bool uniqueInstance;
 
 static void sighandler(int sig) {
     Q_UNUSED(sig);
@@ -70,12 +71,15 @@ int main(int argc, char *argv[]) {
     kdocker.preProcessCommand(argc, argv);
 
     // Send the arguments in a message to another instance if there is one.
-    if (app.sendMessage(QCoreApplication::arguments().join("\n"))) {
+    // Adding unique instance flag checker
+    if (app.sendMessage(QCoreApplication::arguments().join("\n")) && !kdocker.isUniqueInstance()) {
         return 0;
     }
 
     // Handle messages from another instance so this can be a single instance app.
-    QObject::connect(&app, SIGNAL(messageReceived(const QString&)), &kdocker, SLOT(handleMessage(const QString&)));
+    // If unique instance, no need to do that
+    if(!kdocker.isUniqueInstance())
+        QObject::connect(&app, SIGNAL(messageReceived(const QString&)), &kdocker, SLOT(handleMessage(const QString&)));
 
     // Wait for the Qt event loop to be started before running.
     QMetaObject::invokeMethod(&kdocker, "run", Qt::QueuedConnection);

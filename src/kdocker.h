@@ -39,6 +39,8 @@ public:
     void undockAll();
 
     void preProcessCommand(int argc, char **argv);
+    // extra unique instance flag getter
+    bool isUniqueInstance();
 
 public slots:
     void run();
@@ -52,6 +54,8 @@ private:
     void printHelp();
     void printUsage();
     void printVersion();
+    // extra unique instance flag
+    bool uniqueInstance;
 
     TrayItemManager *m_trayItemManager;
 };

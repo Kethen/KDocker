@@ -36,6 +36,7 @@
 #define MAX_HELP_LINE_LEN 79
 
 KDocker::KDocker() {
+    uniqueInstance = false;
     m_trayItemManager = new TrayItemManager();
 }
 
@@ -45,6 +46,10 @@ KDocker::~KDocker() {
         delete m_trayItemManager;
         m_trayItemManager = 0;
     }
+}
+
+bool KDocker::isUniqueInstance(){
+    return uniqueInstance;
 }
 
 void KDocker::undockAll() {
@@ -89,14 +94,18 @@ void KDocker::preProcessCommand(int argc, char **argv) {
                 printHelp();
                 ::exit(0);
                 break;
-            case 'u':
+            /*case 'u':
                 printUsage();
                 ::exit(0);
-                break;
+                break;*/
             case 'v':
                 printVersion();
                 ::exit(0);
                 break;
+            case 'u':
+                // setting unique instance flag
+            	uniqueInstance = true;
+            	break;
         }
     }
 }
@@ -205,6 +214,7 @@ void KDocker::printHelp() {
     commands.append(qMakePair(QString("-r"),      tr("Remove this application from the pager")));
     commands.append(qMakePair(QString("-s"),      tr("Make the window sticky (appears on all desktops)")));
     commands.append(qMakePair(QString("-t"),      tr("Remove this application from the taskbar")));
+    commands.append(qMakePair(QString("-u"),      tr("One window one process mode")));
     commands.append(qMakePair(QString("-v"),      tr("Display version")));
     commands.append(qMakePair(QString("-w wid"),  tr("Window id of the application to dock. Assumes hex number of the form 0x###...")));
     commands.append(qMakePair(QString("-x pid"),  tr("Process id of the application to dock. Assumes decimal number of the form ###...")));
